@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaohuihui.dao.ProductDao">
+    <select id="queryByPid" resultType="com.xiaohuihui.entity.Product">
+        SELECT * FROM `shop_product` WHERE pid = #{pid}
+    </select>
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xiaohuihui.dao.OrderDao">
+    <select id="queryByOid" resultType="com.xiaohuihui.entity.Order">
+        SELECT * FROM `shop_order` WHERE oid = #{oid}
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="oid">
+        INSERT INTO shop_order(`oid`, `uid`, `pid`, `number`)
+        VALUES (#{oid}, #{uid}, #{pid}, #{number})
+    </insert>
+</mapper>

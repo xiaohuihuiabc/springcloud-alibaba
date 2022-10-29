@@ -1,0 +1,24 @@
+server:
+  port: 7000
+# spring 配置
+spring:
+  application:
+    # 配置服务名称
+    name: gateway-service
+  # nacos注册中心
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.172.3:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+#      routes: #路由数组(有默认实现)
+#        - id: product_route # 当前路由发布的表示，要求唯一，默认是UUID
+#          uri: lb://product-service # 请求最终要被转发到的地址
+#          order: 1 # 优先级，越小代表越高
+#          predicates:
+#            - Path=/product-service/**  # 当请求路径满足path指定的规则时，此路径信息才会正常转发
+#          filters:
+#            - StripPrefix=1 #在请求转发之前去掉一层路径
