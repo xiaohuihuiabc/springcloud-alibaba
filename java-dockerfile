@@ -1,0 +1,15 @@
+# 制作带java环境的基础镜像dockerfile
+FROM centos:7
+
+MAINTAINER xiaohuihi
+
+RUN yum -y install glibc.i686
+
+ADD jdk-8u333-linux-i586.tar.gz /usr/local/java
+
+ENV MYPATH /usr/local
+WORKDIR $MYPATH
+
+ENV JAVA_HOME /usr/local/java/jdk1.8.0_333
+ENV CLASSPATH $JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+ENV PATH $PATH:$JAVA_HOME/bin
