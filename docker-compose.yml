@@ -13,10 +13,11 @@ services:
 #      - 3307:3306
 #    volumes: # 指定数据卷，需要宿主机目录已存在。也可以采用别名的方式，可以不需要存在，但要声明
 #      - /home/data/mysql:/var/lib/mysql
-#    #environment: # 指定环境变量，不能与environment同时使用
-#      #- "MYSQL_ROOT_PASSWORD=root"  #字符串的方式时，是数组，要注意前面的-符号
-#    env_file: # 指定环境变量，不能与env_file同时使用
-#      - ./.env # .env # 文件地址，点开头表示这是隐藏的文件
+#    restart: always
+#    environment: # 指定环境变量，不能与environment同时使用
+#      - "MYSQL_ROOT_PASSWORD=root"  #字符串的方式时，是数组，要注意前面的-符号
+#    #env_file: # 指定环境变量，不能与env_file同时使用
+#      #- ./.env # .env # 文件地址，点开头表示这是隐藏的文件
 
 # 注意mysql要先执行，然后创建数据库表才能往下执行，要不然没法连接数据库
 
@@ -27,6 +28,11 @@ services:
     environment:
       - "PREFER_HOST_MODE=hostname"
       - "MODE=standalone"
+      - "JVM_XMS=128m"
+      - "JVM_XMX=128m"
+    volumes: # 指定数据卷，需要宿主机目录已存在。也可以采用别名的方式，可以不需要存在，但要声明
+      - /home/data/nacos/logs:/home/nacos/logs
+      - /home/data/nacos/conf/application.properties:/home/nacos/conf/application.properties
 
   sentinel:
     image: bladex/sentinel-dashboard
