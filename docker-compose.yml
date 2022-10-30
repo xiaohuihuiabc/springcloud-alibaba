@@ -1,20 +1,68 @@
 # 版本号
 version: "3.8"
 
+# 别名，声明需要先创建这么一个network
+networks:
+  appnetwork:  #注意这里只有key，没有value
+
 #定义服务
 services:
-  #具体的容器服务
-  product-service:  # 需要启动的服务名称
-    image: product-service  #使用的镜像
+  mysql:
+    image: mysql
+    ports:
+      - 3307:3306
+    volumes: # 指定数据卷，需要宿主机目录已存在。也可以采用别名的方式，可以不需要存在，但要声明
+      - /home/data/mysql:/var/lib/mysql
+    #environment: # 指定环境变量，不能与environment同时使用
+      #- "MYSQL_ROOT_PASSWORD=root"  #字符串的方式时，是数组，要注意前面的-符号
+    env_file: # 指定环境变量，不能与env_file同时使用
+      - ./.env # .env # 文件地址，点开头表示这是隐藏的文件
+
+# 注意mysql要先执行，然后创建数据库表才能往下执行，要不然没法连接数据库
+
+  nacos:
+    image: nacos/nacos-server
+    ports:
+      - 8848:8848
+    depends_on:
+      - mysql
+
+  sentinel:
+    image: bladex/sentinel-dashboard
+    ports:
+      - 8858:8858
+    depends_on:
+      - nacos
+
+  product-service:  # 需要启动的服务
+    #container_name: product-service #指定服务名称，不建议使用，因为限制了扩展性
+    image: product-service  #使用的镜像，不能跟build指令同时使用
+#    build: # 通过Dockerfile文件来构建镜像，不能跟image指令同时使用
+#      context: ./shop-product/ # Dockerfile文件路径
+#      dockerfile: Dockerfile # Dockerfile文件名称
     ports:
       - 8081:8081      #指定端口映射
+    networks: # 通过别名的方式指定网桥
+      - appnetwork
+    depends_on:
+      - mysql
+      - nacos
+      - sentinel
 
   order-service:  # 需要启动的服务名称
     image: order-service  #使用的镜像
     ports:
       - 8091:8091      #指定端口映射
+    networks: # 通过别名的方式指定网桥
+      - appnetwork
+    depends_on:
+      - product-service #指定依赖的服务，只有在被依赖的服务启动后才启动当前服务
 
   gateway-service:  # 需要启动的服务名称
     image: gateway-service  #使用的镜像
     ports:
       - 7000:7000      #指定端口映射
+    depends_on:
+      - order-service
+    networks: # 通过别名的方式指定网桥
+      - appnetwork
